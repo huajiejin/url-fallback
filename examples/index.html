@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>URL Fallback Example</title>
+	<script src="../dist/url-fallback.iife.min.js" data-url-fallback data-url="cdn.domain/unavailable/path" data-fallbacks="cdn1.domain,cdn2.domain,127.0.0.1:5500/examples"></script>
+	<link rel="stylesheet" href="//cdn.domain/unavailable/path/example.css">
+</head>
+<body>
+	Open network panel in developer tools. There should exist a couple of failed requests for example.css after reloading.
+</body>
+</html>
