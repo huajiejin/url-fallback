@@ -1,60 +1,57 @@
+import { defineConfig } from 'rollup';
 import dts from 'rollup-plugin-dts'
 import esbuild, { minify } from 'rollup-plugin-esbuild'
-import { getBabelOutputPlugin } from '@rollup/plugin-babel'
-import path from 'path'
 
-const name = require('./package.json').main.replace(/\.js$/, '')
-
-const bundle = config => ({
-  ...config,
-  input: 'src/public-api.ts',
-  external: id => !/^[./]/.test(id),
-})
-
-export default [
-  bundle({
-    plugins: [
+export default defineConfig([
+	{
+		plugins: [
 			esbuild(),
 		],
-    output: [
+		input: 'src/public-api.ts',
+		output: [
       {
-        file: `${name}.js`,
+        file: `dist/url-fallback.js`,
         format: 'cjs',
         sourcemap: true,
-				plugins: [
-					getBabelOutputPlugin({
-						configFile: path.resolve(__dirname, 'babel.config.js')
-					}),
-				]
       },
       {
-        file: `${name}.min.js`,
-        format: 'cjs',
-        sourcemap: true,
-				plugins: [
-					getBabelOutputPlugin({
-						configFile: path.resolve(__dirname, 'babel.config.js')
-					}),
-					minify(),
-				]
-      },
-      {
-        file: `${name}.mjs`,
+        file: `dist/url-fallback.esm.js`,
         format: 'es',
         sourcemap: true,
       },
+		],
+	},
+	{
+		plugins: [
+			esbuild(),
+		],
+		input: 'src/browser-script.ts',
+		output: [
       {
-        file: `${name}.esm.js`,
-        format: 'esm',
+        file: `dist/url-fallback.iife.js`,
+        format: 'iife',
+				name: 'UrlFallback',
         sourcemap: true,
       },
-    ],
-  }),
-  bundle({
-    plugins: [dts()],
-    output: {
-      file: `${name}.d.ts`,
+      {
+        file: `dist/url-fallback.iife.min.js`,
+        format: 'iife',
+				name: 'UrlFallback',
+        sourcemap: true,
+				plugins: [
+					minify(),
+				],
+      },
+		],
+	},
+	{
+		plugins: [
+			dts(),
+		],
+		input: 'src/public-api.ts',
+		output: {
+      file: `dist/url-fallback.d.ts`,
       format: 'es',
     },
-  }),
-]
+	},
+])
