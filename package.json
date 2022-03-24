@@ -1,5 +1,5 @@
 {
-  "name": "@jin/url-fallback",
+  "name": "@jinshub/url-fallback",
   "version": "0.1.0",
   "description": "A browser library which allows websites to set fallback urls for their resources.",
   "main": "dist/url-fallback.js",
