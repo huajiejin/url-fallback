@@ -10,7 +10,7 @@ export function addErrorListener(config: ErrorListenerConfig): RemoveErrorListen
 
 		errorEl.dispatchEvent(preUrlFallbackEvent)
 
-		const generator = generators.get(errorEl?.constructor as FallbackElementConstructor)
+		const generator = generators[errorEl?.tagName]
 		const fallbackEl = generator?.(errorEl, config.rules || [])
 		if (fallbackEl) {
 			errorEl.nextFallback = fallbackEl
@@ -34,7 +34,7 @@ export interface ErrorListenerConfig {
 	/** set fallback url replacement rule */
 	rules?: FallbackRule[],
 	/** set fallback element generator function */
-	generators?: FallbackElementGeneratorMap,
+	generators?: FallbackElementGeneratorRecord,
 	/** control where to insert fallback element */
 	insert?: (errorElement: FallbackElement, fallbackElement: FallbackElement) => void,
 }
@@ -43,7 +43,7 @@ interface FallbackRule {
 	fallbacks: string[]
 }
 type FallbackElementGenerator<T = FallbackElement> = (errorElement: T, rules: FallbackRule[]) => T
-type FallbackElementGeneratorMap = Map<FallbackElementConstructor, FallbackElementGenerator>
+type FallbackElementGeneratorRecord = Record<string, FallbackElementGenerator>
 type RemoveErrorListener = () => void
 export interface FallbackElement extends HTMLElement {
 	prevFallback?: FallbackElement
@@ -54,24 +54,22 @@ type FallbackElementConstructor = {
 	prototype: FallbackElement;
 }
 
-function mergeGenerators(source?: FallbackElementGeneratorMap) {
-	const generators: FallbackElementGeneratorMap = new Map()
-	generators.set(HTMLLinkElement, (errorEl: HTMLLinkElement, rules) => {
+function mergeGenerators(source?: FallbackElementGeneratorRecord) {
+	const generators: FallbackElementGeneratorRecord = {}
+	generators.LINK = (errorEl: HTMLLinkElement, rules) => {
 		const fallbackEl = cloneElement(errorEl)
 		const fallbackUrl = genFallbackUrl(errorEl, fallbackEl, rules, errorEl.href)
 		fallbackEl.href = fallbackUrl
 		return fallbackUrl ? fallbackEl : null
-	})
-	generators.set(HTMLScriptElement, (errorEl: HTMLScriptElement, rules) => {
+	}
+	generators.SCRIPT = (errorEl: HTMLScriptElement, rules) => {
 		const fallbackEl = cloneElement(errorEl)
 		const fallbackUrl = genFallbackUrl(errorEl, fallbackEl, rules, errorEl.src)
 		fallbackEl.src = fallbackUrl
 		return fallbackUrl ? fallbackEl : null
-	})
+	}
 
-	source?.forEach((v, k) => { generators.set(k, v) })
-
-	return generators
+	return { ...generators, ...source }
 }
 
 function genFallbackUrl(errorEl: HTMLElement, fallbackEl: HTMLElement, rules: FallbackRule[], errorUrl = getElementUrl(errorEl)) {
