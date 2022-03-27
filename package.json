@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "start": "npm run build:watch",
-    "build": "rollup -c",
+    "build": "rimraf dist && rollup -c",
     "build:watch": "rollup -c -w",
     "prepublishOnly": "npm run test && npm run build",
     "test": "jest src",
@@ -37,6 +37,7 @@
     "@types/jest": "^27.4.1",
     "esbuild": "^0.14.27",
     "jest": "^27.5.1",
+    "rimraf": "^3.0.2",
     "rollup": "^2.70.1",
     "rollup-plugin-dts": "^4.2.0",
     "rollup-plugin-esbuild": "^4.8.2",
