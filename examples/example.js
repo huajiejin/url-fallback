@@ -1,0 +1,1 @@
+document.body.innerHTML = document.body.innerHTML + '<p>example.js loaded</p>'
