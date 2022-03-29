@@ -12,12 +12,10 @@ export default defineConfig([
       {
         file: `dist/url-fallback.js`,
         format: 'cjs',
-        sourcemap: true,
       },
       {
         file: `dist/url-fallback.esm.js`,
         format: 'es',
-        sourcemap: true,
       },
 		],
 	},
@@ -31,7 +29,6 @@ export default defineConfig([
         file: `dist/url-fallback.iife.js`,
         format: 'iife',
 				name: 'UrlFallback',
-        sourcemap: true,
       },
       {
         file: `dist/url-fallback.iife.min.js`,
