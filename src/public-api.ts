@@ -15,14 +15,16 @@ export function addErrorListener(config: ErrorListenerConfig): RemoveErrorListen
 		if (fallbackEl) {
 			errorEl.nextFallback = fallbackEl
 			fallbackEl.prevFallback = errorEl
-			if (config.insert) {
-				config.insert(errorEl, fallbackEl)
-			} else {
-				errorEl.parentNode.insertBefore(fallbackEl, errorEl)
-			}
 		}
 
 		errorEl.dispatchEvent(postUrlFallbackEvent)
+
+		if (config.insert && fallbackEl) {
+			config.insert(errorEl, fallbackEl)
+		} else {
+			errorEl.parentNode.insertBefore(fallbackEl, errorEl)
+			errorEl.parentNode.removeChild(errorEl)
+		}
 	}
 
 	window.addEventListener('error', errorListener, true)
@@ -49,25 +51,25 @@ export interface FallbackElement extends HTMLElement {
 	prevFallback?: FallbackElement
 	nextFallback?: FallbackElement
 }
-type FallbackElementConstructor = {
-	new (): FallbackElement;
-	prototype: FallbackElement;
-}
 
 function mergeGenerators(source?: FallbackElementGeneratorRecord) {
 	const generators: FallbackElementGeneratorRecord = {}
-	generators.LINK = (errorEl: HTMLLinkElement, rules) => {
+	const hrefElementGenerator = (errorEl: HTMLLinkElement, rules) => {
 		const fallbackEl = cloneElement(errorEl)
 		const fallbackUrl = genFallbackUrl(errorEl, fallbackEl, rules, errorEl.href)
 		fallbackEl.href = fallbackUrl
 		return fallbackUrl ? fallbackEl : null
 	}
-	generators.SCRIPT = (errorEl: HTMLScriptElement, rules) => {
+	const srcElementGenerator = (errorEl: HTMLScriptElement | HTMLImageElement, rules) => {
 		const fallbackEl = cloneElement(errorEl)
 		const fallbackUrl = genFallbackUrl(errorEl, fallbackEl, rules, errorEl.src)
 		fallbackEl.src = fallbackUrl
 		return fallbackUrl ? fallbackEl : null
 	}
+
+	generators.LINK = hrefElementGenerator
+	generators.SCRIPT = srcElementGenerator
+	generators.IMG = srcElementGenerator
 
 	return { ...generators, ...source }
 }
