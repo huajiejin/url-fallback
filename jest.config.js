@@ -2,8 +2,6 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  testEnvironmentOptions: {
-    url: "https://success.com",
-  },
+  testEnvironmentOptions: {},
   verbose: true,
 }
