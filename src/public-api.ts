@@ -21,7 +21,7 @@ export function addErrorListener(config: ErrorListenerConfig): RemoveErrorListen
 
 		if (config.insert && fallbackEl) {
 			config.insert(errorEl, fallbackEl)
-		} else {
+		} else if (fallbackEl) {
 			errorEl.parentNode.insertBefore(fallbackEl, errorEl)
 			errorEl.parentNode.removeChild(errorEl)
 		}
