@@ -17,6 +17,7 @@
     "prepublishOnly": "npm run test && npm run build",
     "preexamples": "npm run build && rimraf examples/dist && cp -r dist examples/dist",
     "examples": "http-server examples -a 127.0.0.1 -p 9999",
+    "cypress:open": "cypress open",
     "test": "jest src",
     "test:watch": "jest --watch src"
   },
@@ -37,6 +38,7 @@
   "homepage": "https://github.com/huajiejin/url-fallback#readme",
   "devDependencies": {
     "@types/jest": "^27.4.1",
+    "cypress": "9.5.3",
     "esbuild": "^0.14.27",
     "http-server": "^14.1.0",
     "jest": "^27.5.1",

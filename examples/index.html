@@ -6,11 +6,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>URL Fallback Example</title>
 	<script src="/dist/url-fallback.iife.min.js" data-url-fallback data-url="cdn.domain/unavailable/path" data-fallbacks="cdn1.domain,cdn2.domain,127.0.0.1:9999"></script>
-	<link data-test-1 rel="stylesheet" href="//cdn.domain/unavailable/path/example.css">
+	<link data-basic-test rel="stylesheet" href="//cdn.domain/unavailable/path/example.css">
 </head>
 <body>
 	<p>Open network panel in developer tools. There should exist a couple of failed requests for sample resources after reloading.</p>
-	<script data-test-1 src="//cdn.domain/unavailable/path/example.js"></script>
-	<img data-test-1 src="//cdn.domain/unavailable/path/example.png" style="width: 150px; border-radius: 5px;" alt="example image">
+	<script data-basic-test src="//cdn.domain/unavailable/path/example.js"></script>
+	<img data-basic-test src="//cdn.domain/unavailable/path/example.png" style="width: 150px; border-radius: 5px;" alt="example image">
 </body>
 </html>
