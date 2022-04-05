@@ -28,6 +28,7 @@
     "node": "16",
     "npm": "8"
   },
+  "browserslist": "> 0.25%, not dead",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/huajiejin/url-fallback.git"
@@ -44,6 +45,8 @@
   },
   "homepage": "https://github.com/huajiejin/url-fallback#readme",
   "devDependencies": {
+    "@babel/preset-env": "7.16.11",
+    "@rollup/plugin-babel": "5.3.1",
     "@types/jest": "27.4.1",
     "concurrently": "7.1.0",
     "cypress": "9.5.3",

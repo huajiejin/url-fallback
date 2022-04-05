@@ -1,6 +1,14 @@
 import { defineConfig } from 'rollup';
 import dts from 'rollup-plugin-dts'
 import esbuild, { minify } from 'rollup-plugin-esbuild'
+import { babel } from '@rollup/plugin-babel'
+import { DEFAULT_EXTENSIONS } from '@babel/core'
+
+const babelPlugin = babel({
+	babelHelpers: 'bundled',
+	extensions: [ ...DEFAULT_EXTENSIONS, 'ts' ],
+	presets: [ ['@babel/preset-env'] ],
+})
 
 export default defineConfig([
 	{
@@ -22,6 +30,7 @@ export default defineConfig([
 	{
 		plugins: [
 			esbuild(),
+			babelPlugin,
 		],
 		input: 'src/browser-script.ts',
 		output: [
