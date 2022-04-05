@@ -1,8 +1,9 @@
 import { defineConfig } from 'rollup';
 import dts from 'rollup-plugin-dts'
-import esbuild, { minify } from 'rollup-plugin-esbuild'
+import esbuild from 'rollup-plugin-esbuild'
 import { babel } from '@rollup/plugin-babel'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
+import { terser } from "rollup-plugin-terser"
 
 const babelPlugin = babel({
 	babelHelpers: 'bundled',
@@ -45,7 +46,7 @@ export default defineConfig([
 				name: 'UrlFallback',
         sourcemap: true,
 				plugins: [
-					minify(),
+					terser(),
 				],
       },
 		],
