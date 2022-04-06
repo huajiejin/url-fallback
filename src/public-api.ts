@@ -1,17 +1,41 @@
-export function addErrorListener(config: ErrorListenerConfig): RemoveErrorListener {
+export function addErrorListener(config: ErrorListenerConfig = {}): RemoveErrorListener {
 	if (!document || !window) throw new Error('The function must be running in an environment that has document and window.')
 
-	const generators = mergeGenerators(config.generators)
-
-	const errorListener: EventListenerOrEventListenerObject = (e) => {
+	const generators: FallbackElementGeneratorRecord = assign(
+		{
+			LINK: hrefElementGenerator,
+			SCRIPT: srcElementGenerator,
+			IMG: srcElementGenerator,
+		},
+		config.generators,
+	)
+	const fallbackDataRecord: Record<string, FallbackData> = {}
+	function errorListener (e: ErrorEvent) {
 		const errorEl = e.target as FallbackElement
+		if (!isEventTargetElement(errorEl)) return
+
+		let originalUrl = errorEl.getAttribute('data-original-url')
+		if (!originalUrl) {
+			originalUrl	= getElementUrl(errorEl)
+			errorEl.setAttribute('data-original-url', originalUrl)
+		}
+		let fallbackData = fallbackDataRecord[originalUrl]
+		if (!fallbackData) {
+			fallbackData = {
+				config: Object.freeze(config),
+				originalUrl,
+				matchFallbacks: Object.freeze(getMatchFallbacks(originalUrl, config)),
+			}
+			fallbackDataRecord[originalUrl] = fallbackData
+		}
+		assign(errorEl, { fallbackData })
+		
 		const preUrlFallbackEvent = new Event('pre-url-fallback')
 		const postUrlFallbackEvent = new Event('post-url-fallback')
 
 		errorEl.dispatchEvent(preUrlFallbackEvent)
 
-		const generator = generators[errorEl?.tagName]
-		const fallbackEl = generator?.(errorEl, config.rules || [])
+		const fallbackEl = generators[errorEl.tagName]?.(errorEl)
 		if (fallbackEl) {
 			errorEl.nextFallback = fallbackEl
 			fallbackEl.prevFallback = errorEl
@@ -22,8 +46,8 @@ export function addErrorListener(config: ErrorListenerConfig): RemoveErrorListen
 		if (config.insert && fallbackEl) {
 			config.insert(errorEl, fallbackEl)
 		} else if (fallbackEl) {
-			errorEl.parentNode.insertBefore(fallbackEl, errorEl)
-			errorEl.parentNode.removeChild(errorEl)
+			errorEl.parentNode?.insertBefore(fallbackEl, errorEl)
+			errorEl.parentNode?.removeChild(errorEl)
 		}
 	}
 
@@ -40,59 +64,68 @@ export interface ErrorListenerConfig {
 	/** control where to insert fallback element */
 	insert?: (errorElement: FallbackElement, fallbackElement: FallbackElement) => void,
 }
-interface FallbackRule {
-	url: string
+export interface FallbackRule {
+	url: string | RegExp
 	fallbacks: string[]
 }
-type FallbackElementGenerator<T = FallbackElement> = (errorElement: T, rules: FallbackRule[]) => T
-type FallbackElementGeneratorRecord = Record<string, FallbackElementGenerator>
-type RemoveErrorListener = () => void
-export interface FallbackElement extends HTMLElement {
-	prevFallback?: FallbackElement
-	nextFallback?: FallbackElement
+export type FallbackElementGenerator<T = FallbackElement> = (errorElement: T) => T | null
+export type FallbackElementGeneratorRecord = Record<string, FallbackElementGenerator>
+export type RemoveErrorListener = () => void
+export interface MatchFallback { match: string, fallback: string }
+export interface FallbackData {
+	config: Readonly<ErrorListenerConfig>
+	originalUrl: string
+	matchFallbacks: Readonly<MatchFallback[]>
 }
+export type FallbackElement<T = EventTargetElement> = {
+	fallbackData: FallbackData
+	prevFallback: FallbackElement<T> | null
+	nextFallback: FallbackElement<T> | null
+	src?: string
+	href?: string
+} & T
+type EventTargetElement = EventTarget & HTMLElement
 
-function mergeGenerators(source?: FallbackElementGeneratorRecord) {
-	const generators: FallbackElementGeneratorRecord = {}
-	const hrefElementGenerator = (errorEl: HTMLLinkElement, rules) => {
-		const fallbackEl = cloneElement(errorEl)
-		const fallbackUrl = genFallbackUrl(errorEl, fallbackEl, rules, errorEl.href)
-		fallbackEl.href = fallbackUrl
-		return fallbackUrl ? fallbackEl : null
+function getMatchFallbacks(originalUrl: string, config: ErrorListenerConfig): MatchFallback[] {
+	const matchFallbacks = []
+	const rules = config.rules || []
+	for (let i = 0; i < rules.length; i++) {
+		const rule = rules[i]
+		const regExpMatchArray = originalUrl.match(rule.url) || []
+		const match = regExpMatchArray[0]
+		if (match) {
+			for (let j = 0; j < rule.fallbacks.length; j++) {
+				const fallback = rule.fallbacks[j]
+				matchFallbacks.push({ match, fallback })
+			}
+		}
 	}
-	const srcElementGenerator = (errorEl: HTMLScriptElement | HTMLImageElement, rules) => {
-		const fallbackEl = cloneElement(errorEl)
-		const fallbackUrl = genFallbackUrl(errorEl, fallbackEl, rules, errorEl.src)
-		fallbackEl.src = fallbackUrl
-		return fallbackUrl ? fallbackEl : null
-	}
-
-	generators.LINK = hrefElementGenerator
-	generators.SCRIPT = srcElementGenerator
-	generators.IMG = srcElementGenerator
-
-	return { ...generators, ...source }
+	return matchFallbacks
 }
-
-function genFallbackUrl(errorEl: HTMLElement, fallbackEl: HTMLElement, rules: FallbackRule[], errorUrl = getElementUrl(errorEl)) {
-	try {
-		const originalUrl = errorEl.dataset.originalUrl || errorUrl
-		fallbackEl.dataset.originalUrl = originalUrl
-
-		const fullbackUrlIndex = parseInt(errorEl.dataset.nextFullbackUrlIndex) || 0
-		fallbackEl.dataset.nextFullbackUrlIndex = `${fullbackUrlIndex + 1}`
-
-		const fullbackRule = rules.find(rule => originalUrl.includes(rule.url))
-		const urlReplacement = fullbackRule?.fallbacks[fullbackUrlIndex]
-		const fallbackUrl = urlReplacement ? originalUrl.replace(fullbackRule?.url, urlReplacement) : null
-
-		return fallbackUrl
-	} catch (error) {
-		console.error(error)
-		return null
-	}
+function getFallbackUrl(errorEl: FallbackElement, fallbackEl: FallbackElement) {
+	const originalUrl = errorEl.fallbackData.originalUrl
+	const index = parseInt(errorEl.getAttribute('data-next-index') || '', 10) || 0
+	fallbackEl.setAttribute('data-next-index', `${index + 1}`)
+	const matchFallbacks =  errorEl.fallbackData.matchFallbacks
+	const { match, fallback } = matchFallbacks[index] || {}
+	const fallbackUrl = match ? originalUrl.replace(match, fallback) : null
+	return fallbackUrl
 }
-
+function isEventTargetElement(el: any): el is EventTargetElement {
+	return el?.dispatchEvent !== undefined && el?.tagName !== undefined && (el?.href !== undefined || el?.src !== undefined)
+}
+export function assign<T, U>(target: T, source?: U): T & U {
+	for (const key in source) {
+		if (Object.prototype.hasOwnProperty.call(source, key)) {
+			// @ts-ignore
+			target[key] = source[key]
+		}
+	}
+	return target as T & U
+}
+export function getElementUrl(el: FallbackElement) {
+	return el.href || el.src || ''
+}
 export function cloneElement<T extends HTMLElement>(el: T): T {
 	const newEl = document.createElement(el.tagName.toLowerCase()) as T
 	for (let i = 0; i < el.attributes.length; i++) {
@@ -101,7 +134,15 @@ export function cloneElement<T extends HTMLElement>(el: T): T {
 	}
 	return newEl
 }
-
-export function getElementUrl(el: HTMLElement) {
-	return (el as HTMLLinkElement).href || (el as HTMLScriptElement).src || ''
+export function hrefElementGenerator (errorEl: FallbackElement): FallbackElement | null {
+	const fallbackEl = cloneElement(errorEl)
+	const fallbackUrl = getFallbackUrl(errorEl, fallbackEl)
+	fallbackEl.href = fallbackUrl || ''
+	return fallbackUrl ? fallbackEl : null
+}
+export function srcElementGenerator (errorEl: FallbackElement): FallbackElement | null {
+	const fallbackEl = cloneElement(errorEl)
+	const fallbackUrl = getFallbackUrl(errorEl, fallbackEl)
+	fallbackEl.src = fallbackUrl || ''
+	return fallbackUrl ? fallbackEl : null
 }
