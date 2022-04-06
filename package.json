@@ -1,7 +1,7 @@
 {
   "name": "@jinshub/url-fallback",
   "version": "1.0.0-beta3",
-  "description": "A browser library which allows websites to set fallback urls for their resources.",
+  "description": "A tiny piece of JavaScript code which allows websites to set fallback urls for their resources.",
   "main": "dist/url-fallback.js",
   "module": "dist/url-fallback.esm.js",
   "types": "dist/url-fallback.d.ts",
