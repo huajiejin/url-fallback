@@ -70,3 +70,6 @@ dist
 # cypress
 cypress/videos
 cypress/screenshots
+
+# mac
+.DS_Store
