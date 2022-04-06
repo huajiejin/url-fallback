@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>URL Fallback Example</title>
+	<script src="/dist/url-fallback.lib.iife.min.js"></script>
+	<script>
+		UrlFallback.addErrorListener({
+			rules: [
+				{
+					url: 'your-img-cdn',
+					fallbacks: [
+						'your-img-cdn1',
+						'your-img-cdn2',
+					],
+				},
+				{
+					url: /your-img-cdn.com|your-static-server.com|your-backup-cdn.com\/change\/path/,
+					fallbacks: [
+						'your-backup-cdn.com/change/path',
+						'127.0.0.1:9999',
+						'your-static-server.com',
+					],
+				},
+			]
+		})
+	</script>
+</head>
+<body>
+	<p>Open network panel in developer tools. There should exist a couple of failed requests for sample resources after reloading.</p>
+	<link data-cy rel="stylesheet" href="//your-backup-cdn.com/change/path/assets/example.css">
+	<script data-cy src="//your-static-server.com/assets/example.js"></script>
+	<img data-cy src="//your-img-cdn.com/assets/example.png" style="width: 150px; border-radius: 5px;" alt="example image">
+</body>
+</html>

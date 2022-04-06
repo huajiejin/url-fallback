@@ -20,8 +20,8 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "e2e:open": "concurrently \"npm run examples\" \"npm run cy:open\"",
-    "e2e": "concurrently \"npm run examples\" \"npm run cy:run\"",
-    "test": ""
+    "e2e": "concurrently -k \"npm run examples\" \"npm run cy:run\"",
+    "test": "npm run e2e"
   },
   "engines": {
     "node": "16",

@@ -1,10 +1,8 @@
-/// <reference types="cypress" />
-
 declare global {
   namespace Cypress {
     interface Chainable {
 			pseudoEl(pseudoEl: string, key: string): Chainable<string>
-			naturalWidth(): Chainable<any>
+			naturalWidth(): Chainable<number>
     }
   }
 }
