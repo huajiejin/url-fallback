@@ -33,6 +33,29 @@ export default defineConfig([
 			esbuild(),
 			babelPlugin,
 		],
+		input: 'src/public-api.ts',
+		output: [
+      {
+        file: `dist/url-fallback.lib.iife.js`,
+        format: 'iife',
+				name: 'UrlFallback',
+      },
+      {
+        file: `dist/url-fallback.lib.iife.min.js`,
+        format: 'iife',
+				name: 'UrlFallback',
+        sourcemap: true,
+				plugins: [
+					terser(),
+				],
+      },
+		],
+	},
+	{
+		plugins: [
+			esbuild(),
+			babelPlugin,
+		],
 		input: 'src/browser-script.ts',
 		output: [
       {
