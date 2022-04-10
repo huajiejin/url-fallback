@@ -1,4 +1,4 @@
-import { addErrorListener } from './public-api'
+import { addErrorListener } from './core'
 
 const el = document.querySelector('script[data-url-fallback]')
 if (el instanceof HTMLScriptElement) {
