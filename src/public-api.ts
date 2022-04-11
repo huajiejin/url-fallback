@@ -5,6 +5,7 @@ export {
 	cloneElement,
 	hrefElementGenerator,
 	srcElementGenerator,
+	getMatchAndFallbacks,
 } from './core'
 
 export type {
