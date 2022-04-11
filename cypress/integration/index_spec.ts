@@ -4,6 +4,7 @@ describe('index.html', () => {
   })
 
   beforeEach(() => {
+    cy.get('script[data-cy-non-existent]').as('non_existent_js')
     cy.get('link[data-cy]').as('example_css')
     cy.get('script[data-cy]').as('example_js')
     cy.get('img[data-cy]').as('example_png')
@@ -23,6 +24,10 @@ describe('index.html', () => {
     cy.get('@example_css').should('have.attr', 'data-next-index', '2')
     cy.get('@example_js').should('have.attr', 'data-next-index', '2')
     cy.get('@example_png').should('have.attr', 'data-next-index', '2')
+  })
+
+  it('should retry to load non-existent.js resource 3 times', () => {
+    cy.get('@non_existent_js').should('have.attr', 'data-next-index', '3')
   })
 
   it('should load resources successfully', () => {
