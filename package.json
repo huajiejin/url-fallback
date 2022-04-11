@@ -1,6 +1,6 @@
 {
   "name": "@jinshub/url-fallback",
-  "version": "1.0.0-beta5",
+  "version": "1.0.0-beta.6",
   "description": "A tiny piece of JavaScript code which allows websites to set fallback urls for their resources.",
   "main": "dist/url-fallback.js",
   "module": "dist/url-fallback.esm.js",
