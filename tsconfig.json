@@ -3,5 +3,14 @@
 		"target": "esnext",
 		"strict": true,
 		"moduleResolution": "node"
+	},
+  "include": ["src/**/*.ts"],
+	"typedocOptions": {
+		"entryPoints": ["src/public-api.ts"],
+		"out": "docs",
+		"cname": "url-fallback.jinshub.com",
+		"cleanOutputDir": true,
+		"githubPages": true,
+		"includeVersion": true
 	}
 }
