@@ -82,6 +82,8 @@ addErrorListener({
 })
 ```
 
+For more details of addErrorListener, see [the documentation](https://url-fallback.jinshub.com/modules.html#addErrorListener)
+
 ## Documentation
 
 For more details of public functions and types, see [https://url-fallback.jinshub.com](https://url-fallback.jinshub.com)

@@ -15,7 +15,7 @@
     "build": "rimraf dist && rollup -c",
     "build:watch": "rollup -c -w",
     "docs": "typedoc --watch",
-    "prepublishOnly": "npm run test && npm run build && typedoc",
+    "prepublishOnly": "npm run test && npm run build",
     "preexamples": "npm run build && rimraf examples/dist && cp -r dist examples/dist",
     "examples": "http-server examples -a 127.0.0.1 -p 9999",
     "cy:open": "cypress open",
