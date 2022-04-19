@@ -24,9 +24,67 @@ npm i @jinshub/url-fallback
 ```
 ``` ts
 import { addErrorListener } from '@jinshub/url-fallback'
+addErrorListener({
+	rules: [
+		{
+			url: 'your-cdn.com',
+			fallbacks: [
+				'your-backup-cdn.com',
+				'your-static-server.com/change/path',
+			],
+		},
+	]
+})
 ```
 
-## Usages
+## Usage
+
+Retry matched resources 2 times:
+
+``` html
+<script data-url="your-website.com" data-fallbacks="your-website.com,your-website.com" data-url-fallback src="https://cdn.jsdelivr.net/npm/@jinshub/url-fallback"></script>
+```
+
+Every domain can be replaced by each other if the data-url is empty:
+
+``` html
+<script data-fallbacks="your-website.com,your-backup-cdn.com,your-static-server.com" data-url-fallback src="https://cdn.jsdelivr.net/npm/@jinshub/url-fallback"></script>
+```
+
+Set multiple rules:
+
+``` ts
+import { addErrorListener } from '@jinshub/url-fallback'
+addErrorListener({
+	rules: [
+		{
+			url: 'your-cdn.com',
+			fallbacks: [
+				'your-backup-cdn.com',
+				'your-static-server.com/change/path',
+			],
+		},
+		{
+			fallbacks: [
+				'your-img-cdn.com',
+				'your-img-cdn1.com',
+				'your-img-cdn2.com',
+			],
+		},
+		{
+			url: /your-cdn.com/,
+			fallbacks: [
+				'your-cdn.com',
+				'your-cdn.com',
+			],
+		},
+	]
+})
+```
+
+## Documentation
+
+For more details of public functions and types, see [https://url-fallback.jinshub.com](https://url-fallback.jinshub.com)
 
 ## License
 
