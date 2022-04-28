@@ -16,18 +16,14 @@
     "build:watch": "rollup -c -w",
     "docs": "typedoc --watch",
     "prepublishOnly": "npm run test && npm run build",
-    "preexamples": "npm run build && rimraf examples/dist && cp -r dist examples/dist",
-    "examples": "http-server examples -a 127.0.0.1 -p 9999",
+    "preexamples": "npm run build && rimraf examples/dist && cd examples && ln -s ../dist dist",
+    "examples": "concurrently \"npm start\" \"http-server examples -a 127.0.0.1 -p 9999\"",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "e2e:open": "concurrently \"npm run examples\" \"npm run cy:open\"",
     "e2e": "concurrently -k \"npm run examples\" \"npm run cy:run\"",
     "jest": "jest src",
     "test": "npm run jest && npm run e2e"
-  },
-  "engines": {
-    "node": "16",
-    "npm": "8"
   },
   "browserslist": "> 0.25%, not dead",
   "repository": {
