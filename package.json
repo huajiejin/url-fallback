@@ -21,7 +21,7 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "e2e:open": "concurrently \"npm run examples\" \"npm run cy:open\"",
-    "e2e": "concurrently -k \"npm run examples\" \"npm run cy:run\"",
+    "e2e": "concurrently -k -s first \"npm run cy:run\" \"npm run examples\"",
     "jest": "jest src",
     "test": "npm run jest && npm run e2e"
   },
