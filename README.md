@@ -6,7 +6,7 @@
 ![E2E tests][tests-e2e]
 ![Unit tests][tests-unit]
 
-A tiny piece of JavaScript code which allows websites to set fallback urls for their resources.
+A tiny piece of JavaScript code that allows websites to set fallback urls for their js, css and img resources.
 
 ## Getting Started
 
@@ -36,7 +36,7 @@ addErrorListener({
 })
 ```
 
-You can check if it works by opening the network panel in the Chrome Developer Tools and blocking a resource, then refreshing the page.
+Check if it works by opening the network panel in the Chrome Developer Tools and blocking a js or css resource, then refreshing the page.
 
 ## Usage
 
@@ -46,7 +46,7 @@ Retry resources that matched the data-url 2 times:
 <script data-url="your-website.com" data-fallbacks="your-website.com,your-website.com" data-url-fallback src="https://cdn.jsdelivr.net/npm/@jinshub/url-fallback"></script>
 ```
 
-Retry resources that matched every fallback if the data-url is empty:
+Retry resources that matched every fallback and replace it with other fallbacks if the data-url is empty:
 
 ``` html
 <script data-fallbacks="your-website.com,your-backup-cdn.com,your-static-server.com" data-url-fallback src="https://cdn.jsdelivr.net/npm/@jinshub/url-fallback"></script>
