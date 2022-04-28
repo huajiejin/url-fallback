@@ -2,7 +2,6 @@
 
 
 [![NPM version][npm-version]][npm-package]
-![NPM dependents][dependents]
 [![NPM total downloads][downloads-total]][npm-package]
 ![E2E tests][tests-e2e]
 ![Unit tests][tests-unit]
@@ -37,15 +36,17 @@ addErrorListener({
 })
 ```
 
+You can check if it works by opening the network panel in the Chrome Developer Tools and blocking a resource, then refreshing the page.
+
 ## Usage
 
-Retry matched resources 2 times:
+Retry resources that matched the data-url 2 times:
 
 ``` html
 <script data-url="your-website.com" data-fallbacks="your-website.com,your-website.com" data-url-fallback src="https://cdn.jsdelivr.net/npm/@jinshub/url-fallback"></script>
 ```
 
-Every domain can be replaced by each other if the data-url is empty:
+Retry resources that matched every fallback if the data-url is empty:
 
 ``` html
 <script data-fallbacks="your-website.com,your-backup-cdn.com,your-static-server.com" data-url-fallback src="https://cdn.jsdelivr.net/npm/@jinshub/url-fallback"></script>
@@ -95,6 +96,5 @@ For more details of public functions and types, see [https://url-fallback.jinshu
 [npm-version]: https://img.shields.io/npm/v/@jinshub/url-fallback.svg
 [npm-package]: https://npmjs.org/package/@jinshub/url-fallback
 [downloads-total]: https://img.shields.io/npm/dt/@jinshub/url-fallback.svg
-[dependents]: https://img.shields.io/librariesio/dependents/npm/@jinshub/url-fallback
-[tests-e2e]: https://img.shields.io/badge/e2e%20tests-15%20passed-success
+[tests-e2e]: https://img.shields.io/badge/e2e%20tests-16%20passed-success
 [tests-unit]: https://img.shields.io/badge/unit%20tests-4%20passed-success
