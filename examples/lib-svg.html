@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>URL Fallback Example</title>
+	<script src="/dist/url-fallback.lib.iife.min.js"></script>
+	<script>
+		UrlFallback.addErrorListener({
+			rules: [
+				{
+					fallbacks: [
+						'assets/example1.svg',
+						'assets/example2.svg',
+						'assets/example.svg',
+					],
+				},
+			]
+		})
+	</script>
+</head>
+<body>
+	<svg width="30px" height="30px">
+		<use data-cy-href href="/assets/example1.svg#example1"></use>
+	</svg>
+	<svg width="30px" height="30px">
+		<use data-cy-xlink-href xlink:href="/assets/example2.svg#example2"></use>
+	</svg>
+</body>
+</html>
