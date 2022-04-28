@@ -1,19 +1,12 @@
 export {
 	addErrorListener,
-	assign,
-	getElementUrl,
-	cloneElement,
-	hrefElementGenerator,
-	srcElementGenerator,
+	getUrlFallbackHandler,
 	getMatchAndFallbacks,
 } from './core'
 
 export type {
 	ErrorListenerConfig,
 	FallbackRule,
-	FallbackElementGenerator,
-	FallbackElementGeneratorRecord,
-	RemoveErrorListener,
 	MatchFallback,
 	FallbackData,
 	FallbackElement,
